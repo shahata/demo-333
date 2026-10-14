@@ -25,17 +25,17 @@ export default function Home() {
     fetchTasks();
   }, []);
 
-  const isTitleAllowed = async (title) => {
+  const runTaskFunction = async (name, payload) => {
     try {
-      const res = await base44.functions.invoke("checkTaskTitle", { title });
-      if (!res.data.allowed) {
-        setError("Please keep your tasks free of profanity.");
-        return false;
-      }
+      await base44.functions.invoke(name, payload);
       setError("");
       return true;
-    } catch {
-      setError("Couldn't check the task right now. Please try again.");
+    } catch (err) {
+      setError(
+        err?.response?.status === 422
+          ? "Please keep your tasks free of profanity."
+          : "Couldn't save the task right now. Please try again."
+      );
       return false;
     }
   };
@@ -44,10 +44,9 @@ export default function Home() {
     e.preventDefault();
     if (!newTaskTitle.trim() || isChecking) return;
     setIsChecking(true);
-    const allowed = await isTitleAllowed(newTaskTitle.trim());
+    const saved = await runTaskFunction("createTask", { title: newTaskTitle.trim() });
     setIsChecking(false);
-    if (!allowed) return;
-    await Task.create({ title: newTaskTitle.trim(), completed: false });
+    if (!saved) return;
     setNewTaskTitle("");
     fetchTasks();
   };
@@ -58,8 +57,7 @@ export default function Home() {
   };
 
   const saveTask = async (id, title) => {
-    if (!(await isTitleAllowed(title))) return;
-    await Task.update(id, { title });
+    if (!(await runTaskFunction("updateTask", { id, title }))) return;
     fetchTasks();
   };
 

@@ -1,16 +1,27 @@
 {
   "name": "task_manager",
   "description": "An AI agent that helps you manage and change your tasks",
-  "instructions": "You are a helpful task management assistant. You can help users create, update, mark as completed, and delete tasks using the entity tool. When a user asks to change a task, help them modify it by updating the appropriate fields. Always be conversational and helpful.",
+  "instructions": "You are a helpful task management assistant. Use the createTask function to create tasks and the updateTask function to rename or complete them; use the entity tool only to read and delete tasks. If a function rejects a task because of profanity, tell the user it was blocked and do not retry with a disguised version. Always be conversational and helpful.",
   "tool_configs": [
     {
       "entity_name": "Task",
-      "allowed_operations": ["read", "create", "update", "delete"]
+      "allowed_operations": [
+        "read",
+        "delete"
+      ]
+    },
+    {
+      "function_name": "createTask",
+      "description": "Create a new task (title is checked for profanity and rejected if it contains any). Args: title."
+    },
+    {
+      "function_name": "updateTask",
+      "description": "Update a task's title and/or completed status (new titles are checked for profanity). Args: id, title (optional), completed (optional)."
     }
   ],
-  "selected_skill_names": ["weekly-report"],
-  // Optional: let the agent remember facts across conversations.
-  // scope: "user" (per end-user), "global" (shared), or "both".
+  "selected_skill_names": [
+    "weekly-report"
+  ],
   "memory_config": {
     "enabled": true,
     "scope": "both",

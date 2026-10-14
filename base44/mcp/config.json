@@ -1,3 +1,40 @@
 {
-  "auth": "oauth"
+  "auth": "oauth",
+  "tools": {
+    "entity_overrides": {
+      "Task": { "operations": ["read", "delete"] }
+    },
+    "functions": [
+      {
+        "name": "create_task",
+        "title": "Create task",
+        "description": "Create a new task for the signed-in user. The title is checked for profanity and rejected if it contains any.",
+        "input_schema": {
+          "type": "object",
+          "properties": {
+            "title": { "type": "string", "description": "Task title, 1-300 characters." }
+          },
+          "required": ["title"]
+        },
+        "handler": "createTask",
+        "annotations": { "read_only_hint": false, "destructive_hint": false, "idempotent_hint": false }
+      },
+      {
+        "name": "update_task",
+        "title": "Update task",
+        "description": "Change a task's title and/or completed status. A new title is checked for profanity and rejected if it contains any.",
+        "input_schema": {
+          "type": "object",
+          "properties": {
+            "id": { "type": "string", "description": "ID of the task to update." },
+            "title": { "type": "string", "description": "New title, 1-300 characters. Optional." },
+            "completed": { "type": "boolean", "description": "Whether the task is completed. Optional." }
+          },
+          "required": ["id"]
+        },
+        "handler": "updateTask",
+        "annotations": { "read_only_hint": false, "destructive_hint": false, "idempotent_hint": true }
+      }
+    ]
+  }
 }
