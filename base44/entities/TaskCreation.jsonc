@@ -1,0 +1,28 @@
+{
+  "name": "TaskCreation",
+  "type": "object",
+  "properties": {
+    "task_id": {
+      "type": "string",
+      "description": "ID of the task that was created (log entry; never deleted, so the global counter never goes down)"
+    }
+  },
+  "rls": {
+    "read": {},
+    "create": {
+      "user_condition": {
+        "role": "created_only_by_backend_function"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "updated_only_by_backend_function"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "deleted_only_by_backend_function"
+      }
+    }
+  }
+}

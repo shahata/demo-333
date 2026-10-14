@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
 import TaskItem from "@/components/TaskItem";
+import TaskCounter from "@/components/TaskCounter";
 import { Input } from "@/components/ui/input";
 import { Base44Logo } from "@/components/Base44Logo";
 import { Plus, LogOut } from "lucide-react";
@@ -106,6 +107,8 @@ export default function Home() {
             </p>
           )}
         </div>
+
+        <TaskCounter />
 
         {/* Add Task Form */}
         <form onSubmit={handleSubmit} className="mb-8">

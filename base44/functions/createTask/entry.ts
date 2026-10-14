@@ -1,5 +1,6 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.52';
 import { containsProfanity, validTitle } from '../../shared/profanity.ts';
+import { recordTaskCreated } from '../../shared/taskCounter.ts';
 
 export default async function(req) {
   try {
@@ -19,6 +20,7 @@ export default async function(req) {
       completed: false,
       owner_id: user.id,
     });
+    await recordTaskCreated(base44, task.id);
     return Response.json({ task });
   } catch (error) {
     return Response.json({ error: error.message }, { status: 500 });

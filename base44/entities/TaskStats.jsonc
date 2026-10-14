@@ -1,0 +1,36 @@
+{
+  "name": "TaskStats",
+  "type": "object",
+  "properties": {
+    "key": {
+      "type": "string",
+      "description": "Counter name"
+    },
+    "total": {
+      "type": "number",
+      "default": 0,
+      "description": "Total number of tasks ever created (never decreases)"
+    }
+  },
+  "required": [
+    "key"
+  ],
+  "rls": {
+    "read": {},
+    "create": {
+      "user_condition": {
+        "role": "created_only_by_backend_function"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "updated_only_by_backend_function"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "deleted_only_by_backend_function"
+      }
+    }
+  }
+}
