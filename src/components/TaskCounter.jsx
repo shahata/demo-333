@@ -2,31 +2,27 @@ import { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { Sparkles } from "lucide-react";
 
-const Creations = base44.entities.TaskCreation;
-
 export default function TaskCounter() {
   const [total, setTotal] = useState(null);
 
   useEffect(() => {
-    // Subscribe first and buffer, so a creation during the initial load isn't missed.
-    const seen = new Set();
-    let base = null;
-    let extra = 0;
-    const update = () => base !== null && setTotal(base + extra);
-
-    const unsubscribe = Creations.subscribe((event) => {
-      if (event.type !== "create" || seen.has(event.id)) return;
-      seen.add(event.id);
-      extra += 1;
-      update();
+    let connId = sessionStorage.getItem("connId");
+    if (!connId) {
+      connId = crypto.randomUUID();
+      sessionStorage.setItem("connId", connId);
+    }
+    const room = base44.actors.TaskCounterRoom("global").connect({ id: connId });
+    const sub = room.subscribe((msg) => {
+      if (msg?.type === "total") setTotal(msg.total);
     });
-
-    Creations.count({}).then((n) => {
-      base = n - extra;
-      update();
-    });
-
-    return unsubscribe;
+    // Ask the room to re-check the count after this user creates a task.
+    const onCreated = () => room.send({ type: "refresh" });
+    window.addEventListener("task-created", onCreated);
+    return () => {
+      window.removeEventListener("task-created", onCreated);
+      sub.unsubscribe();
+      room.close();
+    };
   }, []);
 
   if (total === null) return null;

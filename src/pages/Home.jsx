@@ -49,6 +49,7 @@ export default function Home() {
     setIsChecking(false);
     if (!saved) return;
     setNewTaskTitle("");
+    window.dispatchEvent(new Event("task-created"));
     fetchTasks();
   };
 
