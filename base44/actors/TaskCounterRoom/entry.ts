@@ -26,7 +26,13 @@ export default class TaskCounterRoom extends Actor {
     const now = Date.now();
     if (!force && now - this.lastRefresh < MIN_REFRESH_MS) return;
     this.lastRefresh = now;
-    const total = await this.client.asServiceRole.entities.TaskCreation.count({});
+    const res = await fetch('https://demo-333-263f55e0.base44.app/functions/getTaskCount', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: '{}',
+    });
+    const total = (await res.json()).total;
+    if (typeof total !== 'number') throw new Error('bad count response ' + res.status);
     if (total === this.total && !force) return;
     this.total = total;
     await this.storage.put('total', total);

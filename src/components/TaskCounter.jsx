@@ -11,7 +11,7 @@ export default function TaskCounter() {
       connId = crypto.randomUUID();
       sessionStorage.setItem("connId", connId);
     }
-    const room = base44.actors.TaskCounterRoom("global").connect({ id: connId });
+    const room = base44.actors.TaskCounterRoom("global-v2").connect({ id: connId });
     const sub = room.subscribe((msg) => {
       if (msg?.type === "total") setTotal(msg.total);
     });
