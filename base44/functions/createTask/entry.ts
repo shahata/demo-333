@@ -14,7 +14,11 @@ export default async function(req) {
       return Response.json({ error: 'Task rejected: the title contains profanity.' }, { status: 422 });
     }
 
-    const task = await base44.entities.Task.create({ title: title.trim(), completed: false });
+    const task = await base44.asServiceRole.entities.Task.create({
+      title: title.trim(),
+      completed: false,
+      created_by_id: user.id,
+    });
     return Response.json({ task });
   } catch (error) {
     return Response.json({ error: error.message }, { status: 500 });

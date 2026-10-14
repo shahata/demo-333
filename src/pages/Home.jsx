@@ -52,7 +52,7 @@ export default function Home() {
   };
 
   const toggleTask = async (id, completed) => {
-    await Task.update(id, { completed });
+    if (!(await runTaskFunction("updateTask", { id, completed }))) return;
     fetchTasks();
   };
 

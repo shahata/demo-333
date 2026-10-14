@@ -21,7 +21,12 @@ export default async function(req) {
     if (typeof completed === 'boolean') changes.completed = completed;
     if (Object.keys(changes).length === 0) return Response.json({ error: 'Nothing to update' }, { status: 400 });
 
-    const task = await base44.entities.Task.update(id, changes);
+    const existing = await base44.asServiceRole.entities.Task.get(id);
+    if (!existing || existing.created_by_id !== user.id) {
+      return Response.json({ error: 'Task not found' }, { status: 404 });
+    }
+
+    const task = await base44.asServiceRole.entities.Task.update(id, changes);
     return Response.json({ task });
   } catch (error) {
     return Response.json({ error: error.message }, { status: 500 });
