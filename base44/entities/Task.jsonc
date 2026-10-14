@@ -19,8 +19,15 @@
     "read": {
       "created_by_id": "{{user.id}}"
     },
+    "create": {
+      "user_condition": {
+        "role": "created_only_by_backend_function"
+      }
+    },
     "update": {
-      "created_by_id": "{{user.id}}"
+      "user_condition": {
+        "role": "updated_only_by_backend_function"
+      }
     },
     "delete": {
       "created_by_id": "{{user.id}}"
