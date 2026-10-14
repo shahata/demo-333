@@ -12,6 +12,8 @@ export default function Home() {
   const [tasks, setTasks] = useState([]);
   const [newTaskTitle, setNewTaskTitle] = useState("");
   const [isLoading, setIsLoading] = useState(true);
+  const [isChecking, setIsChecking] = useState(false);
+  const [error, setError] = useState("");
 
   const fetchTasks = async () => {
     const data = await Task.list();
@@ -23,9 +25,28 @@ export default function Home() {
     fetchTasks();
   }, []);
 
+  const isTitleAllowed = async (title) => {
+    try {
+      const res = await base44.functions.invoke("checkTaskTitle", { title });
+      if (!res.data.allowed) {
+        setError("Please keep your tasks free of profanity.");
+        return false;
+      }
+      setError("");
+      return true;
+    } catch {
+      setError("Couldn't check the task right now. Please try again.");
+      return false;
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!newTaskTitle.trim()) return;
+    if (!newTaskTitle.trim() || isChecking) return;
+    setIsChecking(true);
+    const allowed = await isTitleAllowed(newTaskTitle.trim());
+    setIsChecking(false);
+    if (!allowed) return;
     await Task.create({ title: newTaskTitle.trim(), completed: false });
     setNewTaskTitle("");
     fetchTasks();
@@ -37,6 +58,7 @@ export default function Home() {
   };
 
   const saveTask = async (id, title) => {
+    if (!(await isTitleAllowed(title))) return;
     await Task.update(id, { title });
     fetchTasks();
   };
@@ -99,12 +121,13 @@ export default function Home() {
             />
             <Button
               type="submit"
-              disabled={!newTaskTitle.trim()}
+              disabled={!newTaskTitle.trim() || isChecking}
               className="h-12 px-5 rounded-xl bg-slate-900 hover:bg-slate-800 shadow-sm"
             >
               <Plus className="w-5 h-5" />
             </Button>
           </div>
+          {error && <p className="text-sm text-red-500 mt-2">{error}</p>}
         </form>
 
         {/* Task List */}
