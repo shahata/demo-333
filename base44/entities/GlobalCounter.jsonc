@@ -1,0 +1,36 @@
+{
+  "name": "GlobalCounter",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Counter name, e.g. 'tasks'"
+    },
+    "total": {
+      "type": "number",
+      "default": 0,
+      "description": "Running total"
+    }
+  },
+  "required": [
+    "name"
+  ],
+  "rls": {
+    "read": {},
+    "create": {
+      "user_condition": {
+        "role": "created_only_by_backend_function"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "updated_only_by_backend_function"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "deleted_only_by_backend_function"
+      }
+    }
+  }
+}

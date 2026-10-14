@@ -20,7 +20,7 @@ export default async function(req) {
       completed: false,
       owner_id: user.id,
     });
-    await recordTaskCreated(base44, task.id);
+    await recordTaskCreated(base44);
     return Response.json({ task });
   } catch (error) {
     return Response.json({ error: error.message }, { status: 500 });
