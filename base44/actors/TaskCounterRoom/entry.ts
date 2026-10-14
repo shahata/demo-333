@@ -11,7 +11,6 @@ export default class TaskCounterRoom extends Actor {
   }
 
   async handleConnect(conn) {
-    conn.send({ type: 'hello', v: 3 });
     await this.refresh(true);
     conn.send({ type: 'total', total: this.total });
   }
@@ -27,13 +26,7 @@ export default class TaskCounterRoom extends Actor {
     const now = Date.now();
     if (!force && now - this.lastRefresh < MIN_REFRESH_MS) return;
     this.lastRefresh = now;
-    let res;
-    try {
-      res = await this.client.functions.invoke('getTaskCount', {});
-    } catch (e) {
-      throw new Error('invoke failed: ' + String(e && e.message));
-    }
-    const total = res.data.total;
+    const total = await this.client.asServiceRole.entities.TaskCreation.count({});
     if (total === this.total && !force) return;
     this.total = total;
     await this.storage.put('total', total);
