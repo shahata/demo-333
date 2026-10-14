@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
+import TaskItem from "@/components/TaskItem";
 import { Input } from "@/components/ui/input";
 import { Base44Logo } from "@/components/Base44Logo";
-import { Plus, Trash2, CheckCircle2 } from "lucide-react";
+import { Plus, CheckCircle2 } from "lucide-react";
 
 const Task = base44.entities.Task;
 
@@ -33,6 +33,11 @@ export default function App() {
 
   const toggleTask = async (id, completed) => {
     await Task.update(id, { completed });
+    fetchTasks();
+  };
+
+  const saveTask = async (id, title) => {
+    await Task.update(id, { title });
     fetchTasks();
   };
 
@@ -102,31 +107,13 @@ export default function App() {
             </div>
           ) : (
             tasks.map((task) => (
-              <div
+              <TaskItem
                 key={task.id}
-                className="group flex items-center gap-4 p-4 bg-white rounded-xl border border-slate-100 shadow-sm hover:shadow-md transition-all duration-200"
-              >
-                <Checkbox
-                  checked={task.completed}
-                  onCheckedChange={(checked) => toggleTask(task.id, checked)}
-                  className="w-5 h-5 rounded-md border-slate-300 data-[state=checked]:bg-orange-500 data-[state=checked]:border-orange-500"
-                />
-                <span
-                  className={`flex-1 text-slate-700 transition-all ${
-                    task.completed ? "line-through text-slate-400" : ""
-                  }`}
-                >
-                  {task.title}
-                </span>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => deleteTask(task.id)}
-                  className="opacity-0 group-hover:opacity-100 h-8 w-8 text-slate-400 hover:text-red-500 hover:bg-red-50 transition-all"
-                >
-                  <Trash2 className="w-4 h-4" />
-                </Button>
-              </div>
+                task={task}
+                onToggle={toggleTask}
+                onDelete={deleteTask}
+                onSave={saveTask}
+              />
             ))
           )}
         </div>
