@@ -10,6 +10,10 @@
       "type": "boolean",
       "default": false,
       "description": "Whether the task is completed"
+    },
+    "owner_id": {
+      "type": "string",
+      "description": "ID of the user who owns this task (set by the createTask function)"
     }
   },
   "required": [
@@ -17,7 +21,14 @@
   ],
   "rls": {
     "read": {
-      "created_by_id": "{{user.id}}"
+      "$or": [
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "data.owner_id": "{{user.id}}"
+        }
+      ]
     },
     "create": {
       "user_condition": {
@@ -30,7 +41,14 @@
       }
     },
     "delete": {
-      "created_by_id": "{{user.id}}"
+      "$or": [
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "data.owner_id": "{{user.id}}"
+        }
+      ]
     }
   }
 }
