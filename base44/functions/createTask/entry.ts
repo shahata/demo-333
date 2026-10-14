@@ -17,7 +17,7 @@ export default async function(req) {
     const task = await base44.asServiceRole.entities.Task.create({
       title: title.trim(),
       completed: false,
-      created_by_id: user.id,
+      owner_id: user.id,
     });
     return Response.json({ task });
   } catch (error) {

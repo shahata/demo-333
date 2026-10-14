@@ -22,7 +22,7 @@ export default async function(req) {
     if (Object.keys(changes).length === 0) return Response.json({ error: 'Nothing to update' }, { status: 400 });
 
     const existing = await base44.asServiceRole.entities.Task.get(id);
-    if (!existing || existing.created_by_id !== user.id) {
+    if (!existing || (existing.owner_id !== user.id && existing.created_by_id !== user.id)) {
       return Response.json({ error: 'Task not found' }, { status: 404 });
     }
 
