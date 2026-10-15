@@ -98,8 +98,7 @@ export default function Home() {
           <h1 className="text-3xl font-semibold text-slate-900 tracking-tight">
             <span className="inline-flex items-center gap-2 align-middle">
               <Base44Logo className="w-9 h-9" />
-              <span className="font-bold">Base44</span>
-              <span>Tasks</span>
+              <span className="font-bold">pavel</span>
             </span>
           </h1>
           {totalCount > 0 && (
